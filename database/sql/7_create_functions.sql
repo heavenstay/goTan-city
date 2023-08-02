@@ -1,7 +1,7 @@
 SET search_path TO gotan;
 
-CREATE OR REPLACE FUNCTION get_layers(
-    _stopType transport_type DEFAULT NULL,
+CREATE OR REPLACE FUNCTION gotan.get_layers(
+    _stopType gotan.transport_type DEFAULT NULL,
     _stopName TEXT DEFAULT NULL,
     _getStops BOOLEAN DEFAULT TRUE,
     _getRoutes BOOLEAN DEFAULT TRUE
@@ -24,11 +24,11 @@ BEGIN
                                         'feature_type', 'stop',
                                         'routes', array_agg(DISTINCT routes.short_name)
                                     ),
-                                'geometry', ST_AsGeoJSON(stops.coordinates)::json
+                                'geometry', gotan.ST_AsGeoJSON(stops.coordinates)::json
                             ) AS feature
-                 FROM stops
-                    INNER JOIN routes_stops on stops.id = routes_stops.stop_id
-                    INNER JOIN routes on routes.id = routes_stops.route_id
+                 FROM gotan.stops
+                    INNER JOIN gotan.routes_stops on stops.id = routes_stops.stop_id
+                    INNER JOIN gotan.routes on routes.id = routes_stops.route_id
                  WHERE (_getStops = true AND ((_stopType IS NULL OR stops.type = _stopType) AND (_stopName IS NULL OR stops.name ILIKE '%' || _stopName || '%')))
                  group by stops.id
 
@@ -44,9 +44,9 @@ BEGIN
                                         'picture', picture,
                                         'feature_type', 'route'
                                     ),
-                                'geometry', ST_AsGeoJSON(coordinates)::json
+                                'geometry', gotan.ST_AsGeoJSON(coordinates)::json
                             ) AS feature
-                 FROM routes
+                 FROM gotan.routes
                  WHERE (_getRoutes = true)
              ) AS subquery
     );
