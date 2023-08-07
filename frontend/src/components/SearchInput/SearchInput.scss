@@ -1,0 +1,14 @@
+.datalist {
+  width: calc(100% - 10px);
+
+  input {
+    font-size: 16px;
+    padding: 5px;
+    height: 35px;
+    width: 100%;
+    border-left: 2px solid black;
+    box-shadow: 0.5pt 0.5pt 0.5pt rgba(0, 0, 0, 0.1);
+    outline: none;
+    color: black;
+  }
+}

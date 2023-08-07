@@ -1,0 +1,32 @@
+.routes-selection {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+
+  ion-icon {
+    font-size: 25px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+
+    .route-icon {
+      display: flex;
+      color: whitesmoke;
+      height: 30px;
+      width: 40px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-left: 10px;
+      margin-right: 10px;
+
+      :hover {
+        cursor: pointer;
+      }
+    }
+  }
+}

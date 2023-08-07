@@ -1,0 +1,40 @@
+/* Reset CSS */
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+dl,
+dt,
+dd,
+img,
+form,
+fieldset,
+input,
+textarea,
+blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+
+  h1 {
+    font-size: 35px;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 25px;
+    font-weight: 500;
+  }
+}
