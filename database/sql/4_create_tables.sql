@@ -69,6 +69,7 @@ CREATE TABLE stops (
     name varchar(100) not null,
     type transport_type not null,
     wheelchair_accessible boolean not null,
+    picture text,
     line_stop_id varchar(100) NOT NULL REFERENCES line_stops (id),
     coordinates GEOMETRY(POINT, 4326)
 );
@@ -78,14 +79,11 @@ CREATE TABLE routes (
     short_name varchar(50) not null,
     long_name text not null,
     color varchar(6) not null,
-    picture text,
-    coordinates GEOMETRY(MULTILINESTRING, 4326),
-    "order" integer not null
+    coordinates GEOMETRY(MULTILINESTRING, 4326)
 );
 
 CREATE TABLE routes_stops (
     route_id varchar(100) NOT NULL REFERENCES routes (id),
     stop_id varchar(100) NOT NULL REFERENCES stops (id),
-    "order" integer not null,
-    PRIMARY KEY (route_id, stop_id, "order")
+    PRIMARY KEY (route_id, stop_id)
 );
