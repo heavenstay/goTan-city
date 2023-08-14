@@ -57,7 +57,7 @@ SELECT DISTINCT
     r.route_id as id,
     r.route_short_name as short_name,
     r.route_long_name as long_name,
-    r.route_color as color,
+    ('#' || r.route_color) as color,
     ST_Collect(l.line) as coordinates
 FROM temp_routes r
          INNER JOIN lines l ON r.route_id = l.route_id

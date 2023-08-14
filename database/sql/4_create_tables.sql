@@ -78,7 +78,7 @@ CREATE TABLE routes (
     id varchar(100) PRIMARY KEY,
     short_name varchar(50) not null,
     long_name text not null,
-    color varchar(6) not null,
+    color varchar(7) not null,
     coordinates GEOMETRY(MULTILINESTRING, 4326)
 );
 
