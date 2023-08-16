@@ -1,14 +1,15 @@
 SET search_path TO gotan;
 
 -- Insert data from temporary tables to main tables
-INSERT INTO line_stops (id, name)
+INSERT INTO stations (id, name, coordinates)
 SELECT DISTINCT
     s.stop_id as id,
-    s.stop_name as name
+    s.stop_name as name,
+    ST_SetSRID(ST_MakePoint(s.stop_lon, s.stop_lat), 4326) as coordinates
 FROM temp_stops s
 WHERE s.parent_station is null;
 
-INSERT INTO stops (id, name, type, wheelchair_accessible, picture, coordinates, line_stop_id)
+INSERT INTO stops (id, name, type, wheelchair_accessible, picture, coordinates, station_id)
 SELECT DISTINCT
     s.stop_id as id,
     s.stop_name as name,
@@ -22,16 +23,16 @@ SELECT DISTINCT
         END as wheelchair_accessible,
     null as picture,
     ST_SetSRID(ST_MakePoint(s.stop_lon, s.stop_lat), 4326) as coordinates,
-    s.parent_station as line_stop_id
+    s.parent_station as station_id
 FROM temp_stops s
          INNER JOIN temp_stop_times st ON s.stop_id = st.stop_id
          INNER JOIN temp_trips t ON st.trip_id = t.trip_id
          INNER JOIN temp_routes r ON t.route_id = r.route_id
 WHERE s.parent_station is not null AND r.route_id IN ('1-0', '2-0', '3-0', '4-0', '5-0');
 
--- Delete line_stops which are not used in stops
-DELETE FROM line_stops
-WHERE id NOT IN (SELECT DISTINCT line_stop_id FROM stops);
+-- Delete stations which are not used in stops
+DELETE FROM stations
+WHERE id NOT IN (SELECT DISTINCT station_id FROM stops);
 
 WITH lines AS (
     SELECT

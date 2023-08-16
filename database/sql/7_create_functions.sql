@@ -1,11 +1,8 @@
 SET search_path TO gotan;
 
 CREATE OR REPLACE FUNCTION gotan.get_layers(
-    _stopType gotan.transport_type DEFAULT NULL,
-    _stopName TEXT DEFAULT NULL,
-    _routeShortName VARCHAR(50) DEFAULT NULL,
-    _getStops BOOLEAN DEFAULT TRUE,
-    _getRoutes BOOLEAN DEFAULT TRUE
+    _stationId VARCHAR(100) DEFAULT NULL,
+    _routeId VARCHAR(100) DEFAULT NULL
 )
     RETURNS jsonb AS $$
 BEGIN
@@ -15,14 +12,15 @@ BEGIN
                        'features', json_agg(feature)
                    )
         FROM (
+                 -- Stations
                  SELECT json_build_object(
                                 'type', 'Feature',
                                 'id', stops.id,
                                 'properties', json_build_object(
                                         'name',stops.name,
                                         'type', stops.type,
-                                        'wheelchair_accessible', stops.wheelchair_accessible,
-                                        'feature_type', 'stop',
+                                        'wheelchairAccessible', stops.wheelchair_accessible,
+                                        'featureType', 'stop',
                                         'picture', stops.picture,
                                         'routes', array_agg(DISTINCT routes.short_name)
                                     ),
@@ -31,31 +29,28 @@ BEGIN
                  FROM gotan.stops
                     INNER JOIN gotan.routes_stops on stops.id = routes_stops.stop_id
                     INNER JOIN gotan.routes on routes.id = routes_stops.route_id
-                 WHERE (_getStops = true
-                            AND ((_stopType IS NULL OR stops.type = _stopType)
-                            AND (_stopName IS NULL OR stops.name ILIKE '%' || _stopName || '%') )
-                            AND (_routeShortName IS NULL OR routes.short_name = _routeShortName)
-                     )
-                 group by stops.id
+                 WHERE (_stationId IS NULL OR station_id = _stationId)
+                        AND (_routeId IS NULL OR routes.id = _routeId)
+                 GROUP BY stops.id
 
                  UNION ALL
 
-                 SELECT json_build_object(
+                 -- Routes
+                 SELECT DISTINCT ON (routes.id) json_build_object(
                                 'type', 'Feature',
-                                'id', id,
+                                'id', routes.id,
                                 'properties', json_build_object(
-                                        'short_name', short_name,
-                                        'long_name', long_name,
+                                        'shortName', short_name,
+                                        'longName', long_name,
                                         'color', color,
-                                        'feature_type', 'route'
+                                        'featureType', 'route'
                                     ),
-                                'geometry', gotan.ST_AsGeoJSON(coordinates)::json
+                                'geometry', gotan.ST_AsGeoJSON(routes.coordinates)::json
                             ) AS feature
                  FROM gotan.routes
-                 WHERE (
-                     _getRoutes = true
-                     AND (_routeShortName IS NULL OR routes.short_name = _routeShortName)
-                 )
+                    INNER JOIN gotan.routes_stops rs on routes.id = rs.route_id
+                    INNER JOIN gotan.stops on rs.stop_id = stops.id and (stops.station_id = _stationId OR _stationId IS NULL)
+                 WHERE _routeId IS NULL OR routes.id = _routeId
              ) AS subquery
     );
 END;

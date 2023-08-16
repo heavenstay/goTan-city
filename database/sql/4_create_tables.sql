@@ -59,9 +59,10 @@ CREATE TABLE temp_routes (
 -- Final tables --- 
 CREATE TYPE transport_type AS ENUM ('BUS', 'TRAM');
 
-CREATE TABLE line_stops (
+CREATE TABLE stations (
     id varchar(100) PRIMARY KEY,
-    name varchar(100) not null
+    name varchar(100) not null,
+    coordinates GEOMETRY(POINT, 4326)
 );
 
 CREATE TABLE stops (
@@ -70,7 +71,7 @@ CREATE TABLE stops (
     type transport_type not null,
     wheelchair_accessible boolean not null,
     picture text,
-    line_stop_id varchar(100) NOT NULL REFERENCES line_stops (id),
+    station_id varchar(100) NOT NULL REFERENCES stations (id),
     coordinates GEOMETRY(POINT, 4326)
 );
 

@@ -1,10 +1,27 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './utils/database/database.module';
+import { LoggerService } from './utils/logger/logger.service';
+import { LoggerMiddleware } from './utils/logger/logger.middleware';
+import { LayersModule } from './layers/layers.module';
+import { StationsModule } from './stations/stations.module';
+import { RoutesModule } from './routes/routes.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    DatabaseModule,
+    LayersModule,
+    StationsModule,
+    RoutesModule,
+  ],
+  providers: [LoggerService],
+  exports: [LoggerService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
