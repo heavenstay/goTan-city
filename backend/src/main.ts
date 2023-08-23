@@ -15,13 +15,28 @@ function setupSwagger(app: INestApplication) {
   SwaggerModule.setup('api/doc', app, document);
 }
 
+function setupHeaders(app: INestApplication<any>) {
+  // Set up cors headers
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+}
+
+function setupGlobalFilters(app: INestApplication<any>) {
+  const loggerService = new LoggerService();
+  app.useGlobalFilters(new HttpExceptionFilter(loggerService));
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   setupSwagger(app);
 
-  const loggerService = new LoggerService();
-  app.useGlobalFilters(new HttpExceptionFilter(loggerService));
+  setupHeaders(app);
+
+  setupGlobalFilters(app);
 
   await app.listen(3000);
 }

@@ -22,7 +22,8 @@ export class RoutesRepository {
                  id,
                  short_name AS "shortName",
                  long_name AS "longName",
-                 color
+                 color,
+                 type
              FROM gotan.routes
              ORDER BY short_name`,
     };

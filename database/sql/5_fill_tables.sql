@@ -53,16 +53,20 @@ WITH lines AS (
          ) AS subquery
     GROUP BY route_id
 )
-INSERT INTO routes (id, short_name, long_name, color, coordinates)
+INSERT INTO routes (id, short_name, long_name, color, type, coordinates)
 SELECT DISTINCT
     r.route_id as id,
     r.route_short_name as short_name,
     r.route_long_name as long_name,
     ('#' || r.route_color) as color,
+    CASE r.route_type
+        WHEN 0 THEN 'TRAM'::transport_type
+        ELSE 'BUS'::transport_type
+        END as "type",
     ST_Collect(l.line) as coordinates
 FROM temp_routes r
          INNER JOIN lines l ON r.route_id = l.route_id
-GROUP BY r.route_id, r.route_short_name, r.route_long_name, r.route_color, l.line;
+GROUP BY r.route_id, r.route_short_name, r.route_long_name, r.route_color, r.route_type, l.line;
 
 INSERT INTO routes_stops (route_id, stop_id)
 SELECT DISTINCT ON (t.route_id, st.stop_id)

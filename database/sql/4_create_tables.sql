@@ -80,6 +80,7 @@ CREATE TABLE routes (
     short_name varchar(50) not null,
     long_name text not null,
     color varchar(7) not null,
+    type transport_type not null,
     coordinates GEOMETRY(MULTILINESTRING, 4326)
 );
 

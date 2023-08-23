@@ -1,5 +1,5 @@
 import "./Logo.scss";
-import logo from "./../../assets/logo.png";
+import logo from "./../../../assets/logo.png";
 
 type LogoProps = {
   onClick: () => void;

@@ -24,8 +24,6 @@ export class LayersRepository {
       values: [payload.stationId, payload.routeId],
     };
 
-    console.log(query);
-
     return this.databaseService.one<GeoJsonResult>(query);
   }
 }

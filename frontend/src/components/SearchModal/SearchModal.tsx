@@ -1,9 +1,9 @@
 import "./SearchModal.scss";
 import { useState } from "react";
-import { Logo } from "../Logo/Logo";
-import { RoutesSelection } from "../RoutesSelection/RoutesSelection";
-import { SearchInput } from "../SearchInput/SearchInput";
-import { WelcomeTitle } from "../WelcomeTitle/WelcomeTitle";
+import { Logo } from "./Logo/Logo";
+import { RoutesSelection } from "./RoutesSelection/RoutesSelection";
+import { SearchInput } from "./SearchInput/SearchInput";
+import { WelcomeTitle } from "./WelcomeTitle/WelcomeTitle";
 
 export function SearchModal() {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // État pour suivre si le menu est ouvert ou fermé
