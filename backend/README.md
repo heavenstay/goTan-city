@@ -1,73 +1,71 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Backend Architecture for goTan-city
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+The backend of the `goTan-city` project is structured using the NestJS framework, offering a modular and scalable architecture. This document dives deep into the architectural choices, setup, and dependencies.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Utils
 
-## Description
+### Database Utilities
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The backend employs native SQL queries instead of an ORM, providing more control over database operations. The `DatabaseService` offers methods to execute these queries and return results in an observable format.
 
-## Installation
+- **Native Query Execution**: The decision to utilize native SQL queries instead of an ORM not only provides enhanced control and the potential for improved performance but also ensures full compatibility with the PostGIS extension, allowing us to leverage all its functionalities to the fullest.
 
-```bash
-$ pnpm install
-```
+### Exception Handling
 
-## Running the app
+The backend boasts a robust exception handling mechanism:
 
-```bash
-# development
-$ pnpm run start
+- **Global Exception Filter**: This filter catches exceptions and formats them into a standardized response. It also logs errors, ensuring sensitive information is not exposed.
 
-# watch mode
-$ pnpm run start:dev
+- **Custom Exceptions**: The backend includes custom exceptions like `TechnicalException` and `FunctionalException` to handle specific error scenarios.
 
-# production mode
-$ pnpm run start:prod
-```
+### Logging
 
-## Test
+A comprehensive logging mechanism is in place:
 
-```bash
-# unit tests
-$ pnpm run test
+- **Request Logging**: Every incoming HTTP request is logged, offering insights into the API's usage and potential issues.
 
-# e2e tests
-$ pnpm run test:e2e
+- **Error Logging**: Errors and warnings are logged, ensuring that issues can be quickly identified and resolved.
 
-# test coverage
-$ pnpm run test:cov
-```
+## Layers
 
-## Support
+The `layers` module is responsible for managing and fetching map layers. It provides an API endpoint to retrieve layers based on different filters.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Key Files:
 
-## Stay in touch
+- **`layers.controller.ts`**: Defines the API endpoint for fetching layers. It uses the `LayersService` to retrieve the layers based on the provided filters.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **`layers.dto.ts`**: Contains the data transfer objects (DTOs) for layers. It defines the expected structure of the layers in a GeoJSON format.
 
-## License
+- **`layers.module.ts`**: Organizes the module structure for layers. It imports necessary modules and declares the service, repository, and controller for layers.
 
-Nest is [MIT licensed](LICENSE).
+- **`layers.service.ts`**: Contains the business logic for fetching layers. It communicates with the `LayersRepository` to execute database queries and retrieve the layers.
+
+- **`layers.repositoy.ts`**: Contains the database queries related to layers. It uses native SQL queries to fetch layers based on the provided filters.
+
+
+
+## Routes
+
+The `routes` module manages transportation routes and is structured similarly to the `layers` module. It provides an API endpoint to retrieve all available routes.
+
+
+## Stations
+
+The `stations` module manages transportation stations and follows the same structure as the `layers` module. It provides an API endpoint to retrieve all available stations.
+
+
+
+## Setup
+
+1. Ensure you have Node.js and npm (or pnpm) installed on your machine.
+2. Navigate to the `backend` directory.
+3. Install the dependencies:
+   ```bash
+   pnpm install
+    ```
+4. Create a .env file based on .env.example and adjust the values as needed. 
+5. Start the backend using:
+    ```bash
+    pnpm run start:dev
+    ```
+Once the backend is running, you can access the Swagger documentation at http://localhost:3000/api/doc to explore the available API endpoints.
