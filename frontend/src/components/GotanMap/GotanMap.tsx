@@ -1,10 +1,11 @@
 import Map, { Source, Layer, Marker, Popup } from "react-map-gl";
 import type { Feature, FeatureCollection, Point } from "geojson";
 import "./GotanMap.scss";
-import bus from "./../../assets/bus-pin.png";
-import train from "./../../assets/train-pin.png";
+import bus from "./../../assets/pin/bus-pin.png";
+import train from "./../../assets/pin/train-pin.png";
 import { useContext, useEffect, useState } from "react";
 import { MapContext, MapProperties } from "../../context/MapContext";
+import { TransportType } from "../../interfaces/Route";
 
 export function GotanMap() {
   const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
@@ -87,7 +88,9 @@ export function GotanMap() {
                   }}
                 >
                   <img
-                    src={point.properties?.type === "BUS" ? bus : train}
+                    src={
+                      point.properties?.type === TransportType.BUS ? bus : train
+                    }
                     alt="description"
                     width="60"
                     height="60"
@@ -116,16 +119,16 @@ export function GotanMap() {
                       Type : {popupInfo.properties?.type}
                     </p>
                     <p className="detail-content">
-                      Accessibilité handicapé :{" "}
+                      Wheelchair accessibility :{" "}
                       {popupInfo.properties?.wheelchairAccessible
-                        ? "oui"
-                        : "non"}
+                        ? "Yes"
+                        : "No"}
                     </p>
                   </div>
                 </div>
                 <div className="detail-column">
                   <div className="detail">
-                    <h4 className="detail-title">Trajets</h4>
+                    <h4 className="detail-title">Routes</h4>
                     <p className="detail-content">
                       {" "}
                       {popupInfo.properties?.routes}

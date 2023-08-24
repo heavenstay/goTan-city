@@ -10,15 +10,16 @@ export function SearchModal() {
 
   return (
     <div className={isMenuOpen ? "search-filter open" : "search-filter"}>
-      {!isMenuOpen && <Logo onClick={() => setIsMenuOpen(true)} />}
+      <Logo 
+        onClick={() => setIsMenuOpen(true)} 
+        style={{ display: isMenuOpen ? 'none' : 'block' }} 
+      />
 
-      {isMenuOpen && (
-        <>
-          <WelcomeTitle onCloseMenu={() => setIsMenuOpen(false)} />
-          <SearchInput />
-          <RoutesSelection />
-        </>
-      )}
+      <div style={{ display: isMenuOpen ? 'block' : 'none' }}>
+        <WelcomeTitle onCloseMenu={() => setIsMenuOpen(false)} />
+        <SearchInput />
+        <RoutesSelection />
+      </div>
     </div>
   );
 }

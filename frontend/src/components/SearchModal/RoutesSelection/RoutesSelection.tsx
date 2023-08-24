@@ -1,32 +1,31 @@
 import "./RoutesSelection.scss";
-import { IonIcon } from "@ionic/react";
-import { trainSharp, busSharp } from "ionicons/icons";
 import { useContext, useEffect, useState } from "react";
 import {
   MapContext,
   MapProperties,
   defaultViewState,
 } from "../../../context/MapContext";
-import { Route } from "../../../interfaces/Route";
+import { Route, TransportType } from "../../../interfaces/Route";
+import trainSharp from "./../../../assets/icon/train-sharp.svg";
+import busSharp from "./../../../assets/icon/bus-sharp.svg";
 
 export function RoutesSelection() {
   const { setViewState, setSelectedRouteId, setSelectedStationId } =
     useContext<MapProperties>(MapContext);
 
-  const [trainRoutes, setTrainRoutes] = useState<Route[]>([]);
-  const [busRoutes, setBusRoutes] = useState<Route[]>([]);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/routes`)
-      .then((response) => response.json())
-      .then((routes: Route[]) => {
-        setTrainRoutes(routes.filter((route: Route) => route.type === "TRAM"));
-        setBusRoutes(routes.filter((route: Route) => route.type === "BUS"));
-      })
-      .catch((error) => {
-        console.error("Error fetching the routes:", error);
-      });
-  }, []);
+    const [routes, setRoutes] = useState<Route[]>([]);
+    
+    useEffect(() => {
+      // Fetch routes
+      fetch(`${import.meta.env.VITE_API_URL}/routes`)
+        .then((response) => response.json())
+        .then((routes: Route[]) => {
+          setRoutes(routes);
+        })
+        .catch((error) => {
+          console.error("Error fetching the routes:", error);
+        });
+    }, []);
 
   const handleRouteChange = (route: Route) => {
     setViewState(defaultViewState);
@@ -38,30 +37,34 @@ export function RoutesSelection() {
     <div className="routes-selection">
       <h2>Filter by routes</h2>
       <div className="row">
-        <IonIcon icon={trainSharp} />
-        {trainRoutes.map((route) => (
-          <div
-            className="route-icon"
-            style={{ backgroundColor: route.color }}
-            key={route.id}
-            onClick={() => handleRouteChange(route)}
-          >
-            <span>{route.shortName}</span>
-          </div>
-        ))}
+        <img src={trainSharp} alt="Train icon" width={30} />
+        {routes
+          .filter((route: Route) => route.type === TransportType.TRAM)
+          .map((route) => (
+            <div
+              className="route-icon"
+              style={{ backgroundColor: route.color }}
+              key={route.id}
+              onClick={() => handleRouteChange(route)}
+            >
+              <span>{route.shortName}</span>
+            </div>
+          ))}
       </div>
       <div className="row">
-        <IonIcon icon={busSharp} />
-        {busRoutes.map((route) => (
-          <div
-            className="route-icon"
-            style={{ backgroundColor: route.color }}
-            key={route.id}
-            onClick={() => handleRouteChange(route)}
-          >
-            <span>{route.shortName}</span>
-          </div>
-        ))}
+        <img src={busSharp} alt="Bus icon" width={30} />
+        {routes
+          .filter((route: Route) => route.type === TransportType.BUS)
+          .map((route) => (
+            <div
+              className="route-icon"
+              style={{ backgroundColor: route.color }}
+              key={route.id}
+              onClick={() => handleRouteChange(route)}
+            >
+              <span>{route.shortName}</span>
+            </div>
+          ))}
       </div>
     </div>
   );

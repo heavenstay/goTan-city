@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useState, } from "react";
 import "./SearchInput.scss";
 import { MapContext, MapProperties } from "../../../context/MapContext";
 import { Station } from "../../../interfaces/Station";
@@ -7,18 +7,19 @@ export function SearchInput() {
   const { setViewState, setSelectedRouteId, setSelectedStationId } =
     useContext<MapProperties>(MapContext);
 
-  const [stations, setStations] = useState([]);
-
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/stations`)
-      .then((response) => response.json())
-      .then((data) => {
-        setStations(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching the stops:", error);
-      });
-  }, []);
+    const [stations, setStations] = useState<Station[]>([]);
+  
+    useEffect(() => {
+      // Fetch stations 
+      fetch(`${import.meta.env.VITE_API_URL}/stations`)
+        .then((response) => response.json())
+        .then((data) => {
+          setStations(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching the stops:", error);
+        });
+    }, []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
