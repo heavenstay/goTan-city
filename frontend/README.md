@@ -61,7 +61,7 @@ Once the frontend is running, you can access it via your browser to visualize an
 
 1. Build the dist folder 
    ```bash
-   pnpm run dev
+   pnpm run build
    ```
 2. Sync android project with dist folder 
    ```
