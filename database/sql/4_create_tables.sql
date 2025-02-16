@@ -1,7 +1,7 @@
-SET search_path TO gotan;
+SET search_path TO public, gotan;
 
 -- Temporary tables ---
-CREATE TABLE temp_stops (
+CREATE TABLE gotan.temp_stops (
     stop_id VARCHAR(100),
     stop_name VARCHAR(100),
     stop_desc VARCHAR(100),
@@ -14,7 +14,7 @@ CREATE TABLE temp_stops (
     wheelchair_boarding INTEGER
 );
 
-CREATE TABLE temp_stop_times (
+CREATE TABLE gotan.temp_stop_times (
     trip_id VARCHAR(100),
     arrival_time VARCHAR(100),
     departure_time VARCHAR(100),
@@ -26,7 +26,7 @@ CREATE TABLE temp_stop_times (
     stop_headsign VARCHAR(100)
 );
 
-CREATE TABLE temp_trips (
+CREATE TABLE gotan.temp_trips (
     route_id VARCHAR(100),
     service_id VARCHAR(100),
     trip_id VARCHAR(100),
@@ -37,14 +37,14 @@ CREATE TABLE temp_trips (
     wheelchair_accessible INTEGER
 );
 
-CREATE TABLE temp_shapes (
+CREATE TABLE gotan.temp_shapes (
     shape_id VARCHAR(100),
     shape_pt_lat DOUBLE PRECISION,
     shape_pt_lon DOUBLE PRECISION,
     shape_pt_sequence INTEGER
 );
 
-CREATE TABLE temp_routes (
+CREATE TABLE gotan.temp_routes (
     route_id VARCHAR(100),
     route_short_name VARCHAR(50),
     route_long_name TEXT,
@@ -56,36 +56,36 @@ CREATE TABLE temp_routes (
 );
 
 
--- Final tables --- 
-CREATE TYPE transport_type AS ENUM ('BUS', 'TRAM');
+-- Final tables ---
+CREATE TYPE gotan.transport_type AS ENUM ('BUS', 'TRAM');
 
-CREATE TABLE stations (
+CREATE TABLE gotan.stations (
     id varchar(100) PRIMARY KEY,
     name varchar(100) not null,
-    coordinates GEOMETRY(POINT, 4326)
+    coordinates geometry(POINT, 4326)
 );
 
-CREATE TABLE stops (
+CREATE TABLE gotan.stops (
     id varchar(100) PRIMARY KEY,
     name varchar(100) not null,
-    type transport_type not null,
+    type gotan.transport_type not null,
     wheelchair_accessible boolean not null,
     picture text,
-    station_id varchar(100) NOT NULL REFERENCES stations (id),
+    station_id varchar(100) NOT NULL REFERENCES gotan.stations(id),
     coordinates GEOMETRY(POINT, 4326)
 );
 
-CREATE TABLE routes (
+CREATE TABLE gotan.routes (
     id varchar(100) PRIMARY KEY,
     short_name varchar(50) not null,
     long_name text not null,
     color varchar(7) not null,
-    type transport_type not null,
+    type gotan.transport_type not null,
     coordinates GEOMETRY(MULTILINESTRING, 4326)
 );
 
-CREATE TABLE routes_stops (
-    route_id varchar(100) NOT NULL REFERENCES routes (id),
-    stop_id varchar(100) NOT NULL REFERENCES stops (id),
+CREATE TABLE gotan.routes_stops (
+    route_id varchar(100) NOT NULL REFERENCES gotan.routes(id),
+    stop_id varchar(100) NOT NULL REFERENCES gotan.stops(id),
     PRIMARY KEY (route_id, stop_id)
 );

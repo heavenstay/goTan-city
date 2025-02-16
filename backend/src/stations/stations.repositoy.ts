@@ -21,8 +21,8 @@ export class StationsRepository {
       text: `SELECT
                  id,
                  name,
-                 gotan.ST_Y(coordinates) AS latitude,
-                 gotan.ST_X(coordinates) AS longitude
+                 ST_Y(coordinates) AS latitude,
+                 ST_X(coordinates) AS longitude
              FROM gotan.stations
              ORDER BY name`,
     };

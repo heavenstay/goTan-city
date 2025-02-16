@@ -1,4 +1,4 @@
-SET search_path TO gotan;
+SET search_path TO public, gotan;
 
 CREATE OR REPLACE FUNCTION gotan.get_layers(
     _stationId VARCHAR(100) DEFAULT NULL,
@@ -24,7 +24,7 @@ BEGIN
                                         'picture', stops.picture,
                                         'routes', array_agg(DISTINCT routes.short_name)
                                     ),
-                                'geometry', gotan.ST_AsGeoJSON(stops.coordinates)::json
+                                'geometry', ST_AsGeoJSON(stops.coordinates)::json
                             ) AS feature
                  FROM gotan.stops
                     INNER JOIN gotan.routes_stops on stops.id = routes_stops.stop_id
@@ -45,7 +45,7 @@ BEGIN
                                         'color', color,
                                         'featureType', 'route'
                                     ),
-                                'geometry', gotan.ST_AsGeoJSON(routes.coordinates)::json
+                                'geometry', ST_AsGeoJSON(routes.coordinates)::json
                             ) AS feature
                  FROM gotan.routes
                     INNER JOIN gotan.routes_stops rs on routes.id = rs.route_id
